@@ -31,7 +31,10 @@ PAGE = Path(__file__).parent / "static" / "dashboard.html"
 TOOL_NAMES = [t["name"] for t in TOOL_SPECS]
 
 
-def execute(prospect: dict, world: World, name: str, about: str = "", expect: str = None) -> dict:
+def execute(prospect: dict, world: World, name: str, about: str = "", expect: str = None,
+            setup: dict = None) -> dict:
+    """Run one prospect. `setup` (replies, failures, busy, bounce) is echoed back so the
+    page can replay the run in the Playground or encode it in a shareable link."""
     final = run_prospect(prospect, world)
     pid = prospect["id"]
     return {
@@ -52,6 +55,7 @@ def execute(prospect: dict, world: World, name: str, about: str = "", expect: st
         "crm": world.crm.get(pid),
         "dead_letter": world.dead_letter,
         "tool_calls": world.tool_calls,
+        "setup": setup or {},
     }
 
 
@@ -59,7 +63,10 @@ def run_scenarios(which: str) -> list:
     chosen = [s for s in SCENARIOS if which in ("all", s["name"])]
     if not chosen:
         raise ValueError(f"unknown scenario {which!r}")
-    return [execute(PROSPECTS[s["prospect"]], make_world(s), s["name"], s["about"], s["expect"]) for s in chosen]
+    return [execute(PROSPECTS[s["prospect"]], make_world(s), s["name"], s["about"], s["expect"],
+                    setup={"replies": list(s.get("replies", [])), "failures": s.get("failures", {}),
+                           "busy": sorted(s.get("busy", ())), "bounce": bool(s.get("bounces"))})
+            for s in chosen]
 
 
 def run_custom(body: dict) -> dict:
@@ -81,7 +88,9 @@ def run_custom(body: dict) -> dict:
         replies={pid: replies[:12]},
         failures=failures,
     )
-    return execute(prospect, world, name="custom run", about="Your own replies and failures")
+    setup = {"replies": replies[:12], "failures": failures, "busy": sorted(set(body.get("busy") or [])),
+             "bounce": bool(body.get("bounce"))}
+    return execute(prospect, world, name="custom run", about="Your own replies and failures", setup=setup)
 
 
 def meta() -> dict:

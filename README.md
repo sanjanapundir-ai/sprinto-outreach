@@ -43,7 +43,19 @@ A local web page that runs the real agent and shows:
   timeline, the emails sent, every tool call and retry, and the CRM record.
 * **Playground:** pick a prospect, write their replies line by line (`-` = no reply), add busy
   calendar slots, inject transient or permanent failures for any tool, and run the agent.
-* **How it decides:** the decision policy, retry table, caps, ICP rules and tool descriptions.
+* **How it decides:** the decision policy, retry table, caps, ICP rules and tool descriptions. Each
+  rule lists the runs where it was used.
+
+Everything is tappable and linked:
+
+* **Headline tiles filter the runs.** Tap "Flagged for review" to see only those runs. Tap again to clear.
+* **Diagram steps open their details.** Tap "Check calendar" to see every call, retry and log line from that step.
+* **Views lead to each other.** A decision links to its rule, a rule links to the runs that used it, a tool call
+  links to its retry policy, and any run can be replayed and edited in the Playground.
+* **Every view is a shareable link.** The address holds the run, filter, step or rule
+  (e.g. `#run=counter_cap_handoff&step=human_handoff`). Playground links include the whole setup, so the
+  person you send it to sees the same run. Use "Copy link to this run".
+* On phones, tap targets are at least 44px and the rule tables become stacked cards.
 
 It uses only Python's standard library (`outreach/dashboard.py` + `outreach/static/dashboard.html`),
 listens on 127.0.0.1 only, and every run uses a fresh in-memory world.
