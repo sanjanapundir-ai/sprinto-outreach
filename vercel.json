@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "mkdir -p public && cp outreach/static/dashboard.html public/index.html",
+  "outputDirectory": "public",
+  "functions": {
+    "api/*.py": { "maxDuration": 30 }
+  }
+}

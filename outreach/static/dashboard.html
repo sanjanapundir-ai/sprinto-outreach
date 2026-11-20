@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outreach Agent</title>
+<style>
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --panel-2: #f1f3f6; --ink: #16181d; --ink-2: #4a5060; --ink-3: #8a90a0;
+  --line: #e3e6ec; --accent: #4f46e5; --accent-soft: #eceafd;
+  --ok: #157f4b; --ok-soft: #e3f5ec; --warn: #a15c00; --warn-soft: #fdf1dc;
+  --bad: #c2341f; --bad-soft: #fde7e3; --muted-soft: #eef0f4;
+  --radius: 10px; --shadow: 0 1px 2px rgba(16,24,40,.05), 0 1px 3px rgba(16,24,40,.06);
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1115; --panel: #171a21; --panel-2: #1e222b; --ink: #e8eaf0; --ink-2: #b2b8c6; --ink-3: #7c8394;
+    --line: #2a2f3a; --accent: #8b85ff; --accent-soft: #26244a;
+    --ok: #4cc38a; --ok-soft: #15301f; --warn: #f0b354; --warn-soft: #3a2c12;
+    --bad: #ff7a66; --bad-soft: #3b1a16; --muted-soft: #232833; --shadow: none;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
+header { position: sticky; top: 0; z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line); }
+.bar { max-width: 1320px; margin: 0 auto; padding: 12px 20px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+.logo { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); display: grid; place-items: center; color: #fff; font-weight: 700; }
+.brand h1 { font-size: 16px; margin: 0; }
+.brand p { margin: 0; color: var(--ink-3); font-size: 12px; }
+nav { display: flex; gap: 4px; background: var(--panel-2); padding: 3px; border-radius: 8px; }
+nav button { border: 0; background: transparent; color: var(--ink-2); padding: 6px 12px; border-radius: 6px; font: inherit; cursor: pointer; }
+nav button.on { background: var(--panel); color: var(--ink); box-shadow: var(--shadow); font-weight: 600; }
+.btn { border: 1px solid var(--accent); background: var(--accent); color: #fff; padding: 7px 14px; border-radius: 8px; font: inherit; font-weight: 600; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn:disabled { opacity: .6; cursor: wait; }
+main { max-width: 1320px; margin: 0 auto; padding: 20px; }
+.kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; box-shadow: var(--shadow); }
+.kpi .v { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.kpi .l { color: var(--ink-3); font-size: 12px; }
+.layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 18px; align-items: start; }
+.list { display: flex; flex-direction: column; gap: 6px; position: sticky; top: 76px; max-height: calc(100vh - 96px); overflow: auto; padding-right: 2px; }
+.item { text-align: left; border: 1px solid var(--line); background: var(--panel); border-radius: var(--radius); padding: 10px 12px; cursor: pointer; font: inherit; color: inherit; }
+.item:hover { border-color: var(--ink-3); }
+.item.on { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.item .top { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.item .co { font-weight: 600; }
+.item .sc { color: var(--ink-3); font-size: 12px; margin-top: 2px; font-family: var(--mono); }
+.pill { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; white-space: nowrap; background: var(--muted-soft); color: var(--ink-2); }
+.pill.ok { background: var(--ok-soft); color: var(--ok); } .pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); } .pill.acc { background: var(--accent-soft); color: var(--accent); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); margin-bottom: 16px; }
+.card h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-3); margin: 0 0 12px; font-weight: 600; }
+.head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+.head h3 { margin: 0; font-size: 20px; }
+.head p { margin: 4px 0 0; color: var(--ink-2); }
+.sub { color: var(--ink-3); font-size: 12px; }
+svg.flow { width: 100%; height: auto; display: block; }
+.steps { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.step { font-size: 12px; padding: 3px 8px; border-radius: 6px; background: var(--panel-2); color: var(--ink-2); }
+.step b { color: var(--ink-3); font-weight: 600; margin-right: 4px; font-variant-numeric: tabular-nums; }
+.step.decide { background: var(--accent-soft); color: var(--accent); }
+.state { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+.field { background: var(--panel-2); border-radius: 8px; padding: 10px; min-width: 0; }
+.field .k { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+.field .val { font-weight: 600; margin-top: 4px; word-break: break-word; }
+.field .val.small { font-size: 12px; font-weight: 500; }
+.decision { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+.decision .why { margin-top: 6px; color: var(--ink); }
+.decision .sit { color: var(--ink-2); font-size: 13px; }
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 6px 0; border-bottom: 1px dashed var(--line); }
+.timeline li:last-child { border-bottom: 0; }
+.dot { width: 10px; height: 10px; border-radius: 50%; margin: 5px auto 0; background: var(--ink-3); }
+.dot.ok { background: var(--ok); } .dot.bad { background: var(--bad); } .dot.acc { background: var(--accent); } .dot.warn { background: var(--warn); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.mail { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+.mail .meta { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--ink-3); }
+.mail pre { white-space: pre-wrap; margin: 6px 0 0; font: 13px/1.45 inherit; font-family: inherit; color: var(--ink); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--ink-3); font-weight: 600; font-size: 12px; }
+td code, .mono { font-family: var(--mono); font-size: 12px; }
+.kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; font-size: 13px; }
+.kv .k { color: var(--ink-3); font-family: var(--mono); font-size: 12px; }
+.empty { color: var(--ink-3); font-style: italic; }
+.form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+.hint { color: var(--ink-3); font-size: 12px; font-weight: 400; }
+select, textarea, input[type=text], input[type=number] { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); font: inherit; }
+textarea { min-height: 150px; font-family: var(--mono); font-size: 13px; }
+.fail-row { display: grid; grid-template-columns: 1fr 90px 110px; gap: 8px; align-items: center; padding: 4px 0; font-size: 13px; }
+.fail-row input[type=number] { padding: 5px 8px; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.chip { border: 1px solid var(--line); background: var(--panel-2); color: var(--ink-2); padding: 4px 10px; border-radius: 99px; font: inherit; font-size: 12px; cursor: pointer; }
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+details { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+details summary { cursor: pointer; font-weight: 600; font-family: var(--mono); font-size: 13px; }
+details pre { white-space: pre-wrap; font-size: 13px; margin: 10px 0 0; color: var(--ink-2); font-family: inherit; }
+.err { color: var(--bad); margin-top: 8px; }
+.hidden { display: none !important; }
+@media (max-width: 1100px) { .kpis { grid-template-columns: repeat(3, 1fr); } .state { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 860px) {
+  .layout, .two, .form { grid-template-columns: 1fr; }
+  .list { position: static; max-height: none; }
+  main { padding: 16px; } .bar { padding: 10px 16px; }
+}
+@media (max-width: 520px) { .kpis, .state { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand">
+      <div class="logo">S</div>
+      <div><h1>Outreach Agent</h1><p>Cold email → reply → calendar → booked meeting → CRM</p></div>
+    </div>
+    <nav>
+      <button data-tab="runs" class="on">Runs</button>
+      <button data-tab="play">Playground</button>
+      <button data-tab="rules">How it decides</button>
+    </nav>
+    <a class="btn ghost" href="https://github.com/sanjanapundir-ai/sprinto-outreach" target="_blank" rel="noopener" style="text-decoration:none">View code</a>
+    <button class="btn" id="runAll">Run all scenarios</button>
+  </div>
+</header>
+
+<main>
+  <section id="tab-runs">
+    <div class="kpis" id="kpis"></div>
+    <div class="layout">
+      <div class="list" id="runList"></div>
+      <div id="detail"><div class="card empty">Running the agent…</div></div>
+    </div>
+  </section>
+
+  <section id="tab-play" class="hidden">
+    <div class="card">
+      <h2>Run the agent on your own situation</h2>
+      <div class="presets" id="presets"></div>
+      <div class="form">
+        <div>
+          <label for="pProspect">Prospect</label>
+          <select id="pProspect"></select>
+          <div style="height:14px"></div>
+          <label for="pReplies">Prospect replies, in order <span class="hint">one per line. The first answers the cold email. Write <code>-</code> for no reply.</span></label>
+          <textarea id="pReplies"></textarea>
+          <div style="height:14px"></div>
+          <label for="pBusy">Extra busy calendar slots <span class="hint">comma-separated, e.g. 2026-11-19T14:00</span></label>
+          <input type="text" id="pBusy" placeholder="2026-11-19T14:00, 2026-11-20T10:00">
+        </div>
+        <div>
+          <label>Inject tool failures <span class="hint">transient = timeouts before success · permanent = fails for good</span></label>
+          <div id="pFails"></div>
+          <div style="height:10px"></div>
+          <label style="font-weight:400"><input type="checkbox" id="pBounce"> Email address bounces</label>
+          <div style="height:16px"></div>
+          <button class="btn" id="pRun">Run agent</button>
+          <div class="err" id="pErr"></div>
+          <p class="sub">"Today" is Tue 17 Nov 2026, 09:00. Working hours are weekdays 09:00–18:00. Wed 18 Nov 10:00 is already booked.</p>
+        </div>
+      </div>
+    </div>
+    <div id="pDetail"></div>
+  </section>
+
+  <section id="tab-rules" class="hidden"><div id="rules"></div></section>
+</main>
+
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const S = { meta: null, runs: [], sel: 0 };
+
+const LABEL = {
+  icp_gate: "ICP gate", send_email: "Send cold email", await_reply: "First reply",
+  check_calendar: "Check calendar", propose_times: "Propose times", wait_for_reply: "Wait for reply",
+  book_meeting: "Book meeting", human_handoff: "Decide", update_crm: "Update CRM",
+};
+const OUTCOME_TONE = {
+  meeting_booked: "ok", needs_review: "warn", closed_by_human: "warn",
+  bounced: "bad", send_failed: "bad",
+};
+const outcomePill = o => `<span class="pill ${OUTCOME_TONE[o] || ""}">${esc((o || "—").replace(/_/g, " "))}</span>`;
+const fmtSlot = s => {
+  if (!s) return "—";
+  const d = new Date(s);
+  return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) + ", " + s.slice(11, 16);
+};
+
+async function api(path, body) {
+  const r = await fetch(path, body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {});
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || r.statusText);
+  return data;
+}
+
+/* ---------------- flow diagram ---------------- */
+const POS = {
+  icp_gate: [95, 62], send_email: [285, 62], await_reply: [475, 62],
+  check_calendar: [95, 182], propose_times: [285, 182], wait_for_reply: [475, 182],
+  book_meeting: [665, 182], update_crm: [855, 182], human_handoff: [475, 296],
+};
+const NW = 150, NH = 44;
+// Links between the two sequences, drawn as right-angle routes so they never cross other nodes.
+const ELBOW = {
+  "await_reply>check_calendar": "M475,86 V104 Q475,112 467,112 H103 Q95,112 95,120 V156",
+  "await_reply>update_crm": "M552,62 H847 Q855,62 855,70 V156",
+  "send_email>update_crm": "M285,38 V30 Q285,22 293,22 H847 Q855,22 855,30 V156",
+  "icp_gate>update_crm": "M95,38 V30 Q95,22 103,22 H847 Q855,22 855,30 V156",
+};
+
+function clip(cx, cy, tx, ty) {           // point where the line from centre toward (tx,ty) leaves the box
+  const dx = tx - cx, dy = ty - cy;
+  if (!dx && !dy) return [cx, cy];
+  const s = Math.min(Math.abs((NW / 2 + 4) / (dx || 1e-9)), Math.abs((NH / 2 + 4) / (dy || 1e-9)));
+  return [cx + dx * s, cy + dy * s];
+}
+
+function flowSVG(path) {
+  const visits = {}; path.forEach(n => visits[n] = (visits[n] || 0) + 1);
+  const edges = new Map();
+  for (let i = 1; i < path.length; i++) {
+    const k = path[i - 1] + ">" + path[i];
+    edges.set(k, (edges.get(k) || 0) + 1);
+  }
+  let e = "";
+  for (const [k, count] of edges) {
+    if (ELBOW[k]) { e += `<path d="${ELBOW[k]}" fill="none" stroke="var(--ink-2)" stroke-width="1.6" marker-end="url(#arr)" opacity=".85"/>`; continue; }
+    const [a, b] = k.split(">"), [x1, y1] = POS[a], [x2, y2] = POS[b];
+    const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy) || 1;
+    const adjacent = Math.abs(dy) < 1 && Math.abs(dx) <= 200 && dx > 0 || (Math.abs(dx) < 1 && Math.abs(dy) <= 130);
+    const backward = dx < 0 || (dy < 0 && Math.abs(dx) < 1);
+    const bend = adjacent && !backward ? 0 : (backward ? -62 : 34) * (Math.abs(dy) < 1 ? 1 : 0.8);
+    const mx = (x1 + x2) / 2 - dy / len * bend, my = (y1 + y2) / 2 + dx / len * bend;
+    const [sx, sy] = clip(x1, y1, mx, my), [ex, ey] = clip(x2, y2, mx, my);
+    const tone = b === "human_handoff" || a === "human_handoff" ? "var(--accent)" : "var(--ink-2)";
+    e += `<path d="M${sx},${sy} Q${mx},${my} ${ex},${ey}" fill="none" stroke="${tone}" stroke-width="${count > 1 ? 2.4 : 1.6}" marker-end="url(#arr)" opacity=".85"/>`;
+    if (count > 1) {
+      const lx = .25 * sx + .5 * mx + .25 * ex, ly = .25 * sy + .5 * my + .25 * ey;
+      e += `<g><rect x="${lx - 13}" y="${ly - 10}" width="26" height="18" rx="9" fill="var(--panel)" stroke="var(--line)"/><text x="${lx}" y="${ly + 3}" text-anchor="middle" font-size="11" fill="var(--ink-2)" font-weight="600">×${count}</text></g>`;
+    }
+  }
+  let n = "";
+  for (const [id, [x, y]] of Object.entries(POS)) {
+    const v = visits[id] || 0, isDecide = id === "human_handoff";
+    const fill = v ? (isDecide ? "var(--accent-soft)" : "var(--panel)") : "var(--panel-2)";
+    const stroke = v ? (isDecide ? "var(--accent)" : "var(--ink-2)") : "var(--line)";
+    const ink = v ? "var(--ink)" : "var(--ink-3)";
+    n += `<g opacity="${v ? 1 : .55}"><rect x="${x - NW / 2}" y="${y - NH / 2}" width="${NW}" height="${NH}" rx="9" fill="${fill}" stroke="${stroke}" stroke-width="${v ? 1.5 : 1}" ${v ? "" : 'stroke-dasharray="4 3"'}/>
+      <text x="${x}" y="${y + 5}" text-anchor="middle" font-size="13" font-weight="${v ? 600 : 500}" fill="${ink}">${LABEL[id]}</text>`;
+    if (v > 1) n += `<circle cx="${x + NW / 2 - 4}" cy="${y - NH / 2 + 2}" r="10" fill="var(--accent)"/><text x="${x + NW / 2 - 4}" y="${y - NH / 2 + 6}" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">${v}</text>`;
+    n += `</g>`;
+  }
+  return `<svg class="flow" viewBox="0 0 950 340" role="img" aria-label="Steps this run went through">
+    <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-2)"/></marker></defs>
+    <text x="935" y="100" text-anchor="end" font-size="11" fill="var(--ink-3)" font-weight="600" letter-spacing=".06em">SEQUENCE 1 · SEND &amp; WAIT</text>
+    <text x="935" y="140" text-anchor="end" font-size="11" fill="var(--ink-3)" font-weight="600" letter-spacing=".06em">SEQUENCE 2 · SCHEDULE THE CALL (LANGGRAPH)</text>
+    <line x1="20" y1="122" x2="935" y2="122" stroke="var(--line)" stroke-dasharray="2 4"/>
+    ${e}${n}</svg>`;
+}
+
+/* ---------------- run detail ---------------- */
+function eventTone(t) {
+  if (/FAILED|bounce|550/i.test(t)) return "bad";
+  if (/^DECISION/.test(t)) return "acc";
+  if (/book_meeting:|outcome=meeting_booked/.test(t)) return "ok";
+  if (/silence|no_reply|-> unclear|BUSY/.test(t)) return "warn";
+  return "";
+}
+
+function fieldVal(k, v) {
+  if (k === "times_proposed") return Array.isArray(v) && v.length ? `<div class="val small">${v.map(fmtSlot).join("<br>")}</div>` : `<div class="val">—</div>`;
+  if (typeof v === "boolean") return `<div class="val">${v ? "true" : "false"}</div>`;
+  return `<div class="val">${esc(v ?? "—")}</div>`;
+}
+
+function renderDetail(r) {
+  const steps = r.path.map((p, i) => `<span class="step ${p === "human_handoff" ? "decide" : ""}"><b>${i + 1}</b>${esc(LABEL[p] || p)}</span>`).join("");
+  const decisions = r.decisions.length ? r.decisions.map(d => `
+      <div class="decision">
+        <div class="sit"><span class="pill acc">${esc(d.situation.kind)}</span> &nbsp;${esc(String(d.situation.reason || "").replace(/^\w+:\s*/, ""))}</div>
+        <div class="why"><b>Decided by ${esc(d.decision.by || "human")}: ${esc(d.decision.action)}</b>
+          ${d.decision.slot ? " " + esc(fmtSlot(d.decision.slot)) : ""}${d.decision.slots ? " " + d.decision.slots.map(fmtSlot).map(esc).join(", ") : ""}${d.decision.outcome ? " → " + esc(d.decision.outcome) : ""}
+          ${d.decision.why ? `<div class="sub" style="margin-top:4px">${esc(d.decision.why)}</div>` : ""}</div>
+      </div>`).join("") : `<div class="empty">No handoff needed. The agent finished without escalating.</div>`;
+  const mails = r.outbox.length ? r.outbox.map(m => `
+      <div class="mail"><div class="meta"><span>${esc(m.kind === "cold_outreach" ? "Cold email" : "Proposed times")} → ${esc(m.to)}</span><span class="mono">${esc(m.id)}</span></div>
+      <div style="font-weight:600;margin-top:4px">${esc(m.subject)}</div><pre>${esc(m.body)}</pre></div>`).join("") : `<div class="empty">No email was sent.</div>`;
+  const calls = r.tool_calls.length ? `<table><thead><tr><th>Tool</th><th>Attempt</th><th>Result</th></tr></thead><tbody>${r.tool_calls.map(c => `
+      <tr><td><code>${esc(c.tool)}</code></td><td>${c.attempt}</td><td>${c.ok ? '<span class="pill ok">ok</span>' : `<span class="pill ${c.kind === "permanent" ? "bad" : "warn"}">${esc(c.kind)} error</span>`}</td></tr>`).join("")}</tbody></table>` : `<div class="empty">No tool calls.</div>`;
+  const crm = r.crm ? `<div class="kv">${Object.entries(r.crm).map(([k, v]) => `<div class="k">${esc(k)}</div><div>${esc(Array.isArray(v) ? v.join(", ") || "—" : v ?? "—")}</div>`).join("")}</div>`
+    : `<div class="empty">Not written. The CRM was unavailable, so the record waits in the dead-letter queue.</div>`;
+  const dl = r.dead_letter.length ? `<div style="margin-top:12px"><span class="pill warn">dead-letter</span> <span class="sub">${esc(r.dead_letter.map(d => d.error).join("; "))}</span></div>` : "";
+  const p = r.prospect;
+
+  return `
+    <div class="card">
+      <div class="head">
+        <div><h3>${esc(p.company)} <span class="sub">· ${esc(p.first_name)}, ${esc(p.contact_role)}</span></h3>
+          <p>${esc(r.about)}</p>
+          <div class="sub mono" style="margin-top:4px">${esc(r.name)} · ${esc(p.industry)} · ${esc(p.employee_count)} employees · compliance: ${esc(p.compliance_status)}</div></div>
+        <div style="text-align:right">${outcomePill(r.outcome)}
+          ${r.passed === null ? "" : `<div class="sub" style="margin-top:6px">${r.passed ? "✓ expected outcome" : "✗ expected " + esc(r.expect)}</div>`}
+          ${r.booking ? `<div style="margin-top:6px;font-weight:600">${esc(fmtSlot(r.booking.start))}</div>` : ""}</div>
+      </div>
+    </div>
+    <div class="card"><h2>Path through the workflow</h2>${flowSVG(r.path)}<div class="steps">${steps}</div></div>
+    <div class="card"><h2>State object · six fixed fields</h2>
+      <div class="state">${S.meta.core_fields.map(k => `<div class="field"><div class="k">${k}</div>${fieldVal(k, r.core[k])}</div>`).join("")}</div></div>
+    <div class="card"><h2>Decisions</h2>${decisions}</div>
+    <div class="card"><h2>Timeline</h2><ul class="timeline">${r.events.map(t => `<li><span class="dot ${eventTone(t)}"></span><span>${esc(t)}</span></li>`).join("")}</ul></div>
+    <div class="two">
+      <div class="card"><h2>Emails sent</h2>${mails}</div>
+      <div>
+        <div class="card"><h2>Tool calls &amp; retries</h2>${calls}</div>
+        <div class="card"><h2>CRM record</h2>${crm}${dl}</div>
+      </div>
+    </div>`;
+}
+
+/* ---------------- runs tab ---------------- */
+function renderKpis() {
+  const R = S.runs, n = f => R.filter(f).length;
+  const tiles = [
+    [R.length, "Prospects run"],
+    [n(r => r.outcome === "meeting_booked"), "Meetings booked"],
+    [R.reduce((a, r) => a + r.decisions.length, 0), "Automatic decisions"],
+    [n(r => r.outcome === "needs_review"), "Flagged for review"],
+    [R.reduce((a, r) => a + r.tool_calls.filter(c => !c.ok).length, 0), "Tool failures handled"],
+    [`${n(r => r.passed)}/${R.length}`, "Expected outcomes"],
+  ];
+  $("#kpis").innerHTML = tiles.map(([v, l]) => `<div class="kpi"><div class="v">${esc(v)}</div><div class="l">${esc(l)}</div></div>`).join("");
+}
+
+function renderRuns() {
+  renderKpis();
+  $("#runList").innerHTML = S.runs.map((r, i) => `
+    <button class="item ${i === S.sel ? "on" : ""}" data-i="${i}">
+      <div class="top"><span class="co">${esc(r.prospect.company)}</span>${outcomePill(r.outcome)}</div>
+      <div class="sc">${esc(r.name)}${r.decisions.length ? ' · <span style="color:var(--accent)">auto-decided</span>' : ""}</div>
+    </button>`).join("");
+  $("#detail").innerHTML = S.runs.length ? renderDetail(S.runs[S.sel]) : "";
+}
+
+async function runAll() {
+  const b = $("#runAll"); b.disabled = true; b.textContent = "Running…";
+  try { S.runs = await api("/api/run", { scenario: "all" }); S.sel = Math.min(S.sel, S.runs.length - 1); renderRuns(); }
+  catch (e) { $("#detail").innerHTML = `<div class="card err">${esc(e.message)}</div>`; }
+  finally { b.disabled = false; b.textContent = "Run all scenarios"; }
+}
+
+/* ---------------- playground ---------------- */
+const PRESETS = [
+  ["Books first time", "p01", "Sounds good, happy to chat.\nOption 2 works for me.", {}],
+  ["Counter-proposal", "p02", "Yes, let's talk.\nCould we do 2026-11-20 15:00 instead?", {}],
+  ["Keeps saying no to times", "p08", "Yes, keen.\nHow about 2026-11-18 10:00?\nThen 2026-11-21 10:00?\nOK, 2026-11-22 15:00?", {}],
+  ["Goes quiet", "p04", "Sure, open to a call.\n-\n-\n-", {}],
+  ["Vague reply", "p03", "Interested.\nhmm, maybe?\nThe first one works.", {}],
+  ["Flaky calendar", "p09", "Sure.\nThe first one works.", { check_calendar: [2, false] }],
+  ["Calendar down", "p10", "Yes, interested.", { check_calendar: [4, false] }],
+  ["Not interested", "p05", "Thanks, but not interested right now.", {}],
+];
+
+function setupPlayground() {
+  $("#pProspect").innerHTML = S.meta.prospects.map(p => `<option value="${esc(p.id)}">${esc(p.company)} — ${esc(p.first_name)} (${esc(p.contact_role)}, ${esc(p.employee_count)} staff)</option>`).join("");
+  $("#pFails").innerHTML = S.meta.tools.map(t => `
+    <div class="fail-row"><code>${esc(t.name)}</code>
+      <input type="number" min="0" max="6" value="0" data-tool="${esc(t.name)}" aria-label="${esc(t.name)} transient failures">
+      <label style="font-weight:400;margin:0"><input type="checkbox" data-perm="${esc(t.name)}"> permanent</label></div>`).join("");
+  $("#presets").innerHTML = PRESETS.map((p, i) => `<button class="chip" data-preset="${i}">${esc(p[0])}</button>`).join("");
+  applyPreset(0);
+}
+
+function applyPreset(i) {
+  const [, pid, replies, fails] = PRESETS[i];
+  $("#pProspect").value = pid; $("#pReplies").value = replies; $("#pBusy").value = ""; $("#pBounce").checked = false;
+  document.querySelectorAll("[data-tool]").forEach(el => el.value = (fails[el.dataset.tool] || [0])[0]);
+  document.querySelectorAll("[data-perm]").forEach(el => el.checked = !!(fails[el.dataset.perm] || [0, false])[1]);
+}
+
+async function runCustom() {
+  const failures = {};
+  document.querySelectorAll("[data-tool]").forEach(el => {
+    const t = el.dataset.tool, k = Array(Math.max(0, Math.min(6, +el.value || 0))).fill("transient");
+    if ($(`[data-perm="${t}"]`).checked) k.push("permanent");
+    if (k.length) failures[t] = k;
+  });
+  const body = {
+    prospect_id: $("#pProspect").value,
+    replies: $("#pReplies").value.split("\n").map(l => l.trim()).filter((l, i, a) => l || i < a.length - 1).map(l => l === "-" || l === "" ? null : l),
+    busy: $("#pBusy").value.split(",").map(s => s.trim()).filter(Boolean),
+    bounce: $("#pBounce").checked, failures,
+  };
+  $("#pErr").textContent = ""; const b = $("#pRun"); b.disabled = true;
+  try { $("#pDetail").innerHTML = renderDetail(await api("/api/custom", body)); }
+  catch (e) { $("#pErr").textContent = e.message; }
+  finally { b.disabled = false; }
+}
+
+/* ---------------- rules tab ---------------- */
+function renderRules() {
+  const m = S.meta;
+  $("#rules").innerHTML = `
+    <div class="card"><h2>Automatic decisions · when the agent would otherwise pause for a person</h2>
+      <table><thead><tr><th>Situation</th><th>Decision</th><th>Rule</th></tr></thead><tbody>
+      ${m.decision_policy.map(p => `<tr><td><span class="pill acc">${esc(p.kind)}</span></td><td><b>${esc(p.decision)}</b></td><td>${esc(p.rule)}</td></tr>`).join("")}
+      </tbody></table>
+      <p class="sub">Every slot the agent books or proposes is checked with <code>check_calendar</code> first. If that check fails, the run closes as needs_review.</p></div>
+    <div class="card"><h2>Retry table · decided before the run</h2>
+      <table><thead><tr><th>Tool</th><th>Retries</th><th>Retries used up</th><th>Permanent failure</th><th>Does anything after it depend on it?</th></tr></thead><tbody>
+      ${m.retry_table.map(p => `<tr><td><code>${esc(p.tool)}</code></td><td>${p.max_retries}</td><td>${esc(p.on_transient_exhausted)}</td><td>${esc(p.on_permanent)}</td><td>${esc(p.downstream_dependency)}</td></tr>`).join("")}
+      </tbody></table>
+      <p class="sub">Hard caps: ${m.caps.max_reply_rounds} proposal rounds per prospect · ${m.caps.recursion_limit} graph steps per run.</p></div>
+    <div class="two">
+      <div class="card"><h2>ICP short-circuit rules · checked in order</h2>
+        <table><tbody>${m.icp_rules.map(r => `<tr><td><code>${esc(r.rule)}</code></td><td>${esc(r.reason)}</td></tr>`).join("")}</tbody></table></div>
+      <div class="card"><h2>Tool descriptions · what the model reads</h2>
+        ${m.tools.map(t => `<details><summary>${esc(t.name)}</summary><pre>${esc(t.description)}</pre></details>`).join("")}</div>
+    </div>`;
+}
+
+/* ---------------- wiring ---------------- */
+document.addEventListener("click", e => {
+  const tab = e.target.closest("nav button");
+  if (tab) {
+    document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b === tab));
+    ["runs", "play", "rules"].forEach(t => $("#tab-" + t).classList.toggle("hidden", t !== tab.dataset.tab));
+    return;
+  }
+  const item = e.target.closest(".item");
+  if (item) { S.sel = +item.dataset.i; renderRuns(); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+  const chip = e.target.closest("[data-preset]");
+  if (chip) applyPreset(+chip.dataset.preset);
+});
+$("#runAll").onclick = runAll;
+$("#pRun").onclick = runCustom;
+
+(async () => {
+  try {
+    S.meta = await api("/api/meta");
+    setupPlayground(); renderRules(); await runAll();
+  } catch (e) { $("#detail").innerHTML = `<div class="card err">Could not reach the agent server: ${esc(e.message)}</div>`; }
+})();
+</script>
+</body>
+</html>
