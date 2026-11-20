@@ -46,6 +46,11 @@ A local web page that runs the real agent and shows:
 * **How it decides:** the decision policy, retry table, caps, ICP rules and tool descriptions. Each
   rule lists the runs where it was used.
 
+Design: dark and light themes (follows your system; `t` or the header button switches), a violet-to-pink
+accent, chat-style conversation view, outcome-mix bar, skeleton loading, and motion that respects
+"reduce motion". Power-user extras: **⌘K command bar** (jump to any prospect, rule or action), `/` search,
+`j`/`k` next/previous prospect, `1`/`2`/`3` tabs, `r` run all, `c` copy link, `?` all shortcuts.
+
 Everything is tappable and linked:
 
 * **Headline tiles filter the runs.** Tap "Flagged for review" to see only those runs. Tap again to clear.
