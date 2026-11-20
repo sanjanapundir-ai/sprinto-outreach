@@ -18,6 +18,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
+from .components import components_map
 from .decider import DECISION_POLICY
 from .icp import ICP
 from .pipeline import run_prospect
@@ -106,6 +107,7 @@ def meta() -> dict:
         "icp_rules": [{"rule": r, "reason": why} for r, why in ICP["short_circuit"]],
         "base_busy": sorted(BASE_BUSY),
         "today": "2026-11-17T09:00",
+        "components_map": components_map(),
     }
 
 

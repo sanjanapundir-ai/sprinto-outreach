@@ -218,3 +218,24 @@ def test_dashboard_custom_run_and_validation():
                 {"prospect_id": "p01", "failures": {"send_email": ["explode"]}}):
         with pytest.raises(ValueError):
             run_custom(bad)
+
+
+# ---------------------------------------------------------------- components map
+def test_components_map_matches_the_code():
+    from pathlib import Path
+    from outreach.components import COMPONENTS, EDGES, LAYERS
+    root = Path(__file__).resolve().parent.parent
+    ids = [c["id"] for c in COMPONENTS]
+    assert len(ids) == len(set(ids)), "component ids must be unique"
+    layer_ids = {l["id"] for l in LAYERS}
+    for c in COMPONENTS:
+        assert (root / c["file"]).is_file(), f"{c['id']}: {c['file']} does not exist"
+        assert c["layer"] in layer_ids
+        step = c["related"].get("step")
+        assert step is None or step in {"send_email", "check_calendar", "propose_times", "wait_for_reply",
+                                         "book_meeting", "human_handoff", "update_crm"}
+        assert c["related"].get("tool") in (None, *TOOL_IMPLS)
+    for a, b, _ in EDGES:
+        assert a in ids and b in ids, f"edge {a}->{b} points at an unknown component"
+    tool_cards = {c["name"] for c in COMPONENTS if c["layer"] == "tools"}
+    assert tool_cards == set(TOOL_IMPLS), "every tool appears on the map exactly once"

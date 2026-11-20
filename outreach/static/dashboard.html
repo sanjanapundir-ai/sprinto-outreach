@@ -291,6 +291,38 @@ details.tool summary::after { content: "+"; font: 500 16px/1 var(--font); color:
 details.tool[open] summary::after { content: "–"; }
 details.tool pre { white-space: pre-wrap; font: 13px/1.6 var(--font); margin: 10px 0 0; color: var(--ink-2); }
 
+/* Components map */
+.lanes { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; align-items: stretch; margin-bottom: 16px; }
+.lane { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 14px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px; margin: 0 14px 0 0; }
+.lane:last-child { margin-right: 0; }
+.lane:not(:last-child)::after { content: ""; position: absolute; right: -15px; top: 50%; width: 14px; height: 2px; background: var(--line-strong); }
+.lane:not(:last-child)::before { content: ""; position: absolute; right: -15px; top: calc(50% - 4px); border: 5px solid transparent; border-left-color: var(--line-strong); border-right: 0; z-index: 1; transform: translateX(4px); }
+.lane-h { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 4px; }
+.lane .comps { display: flex; flex-direction: column; gap: 8px; }
+.lane-n { width: 26px; height: 26px; border-radius: 8px; background: var(--grad); color: #fff; font: 700 13px/26px var(--display); text-align: center; flex: none; }
+.lane-h b { display: block; font: 600 14.5px/1.2 var(--display); }
+.lane-h small { display: block; color: var(--ink-3); font-size: 11.5px; margin-top: 2px; }
+.comp { text-align: left; width: 100%; border: 1px solid var(--line); background: var(--surface-2); border-radius: 12px; padding: 9px 11px; transition: border-color .15s, background .15s, opacity .2s, transform .15s; }
+.comp:hover { border-color: var(--accent); transform: translateY(-1px); }
+.comp b { display: block; font-weight: 600; font-size: 13px; }
+.comp code { display: block; font: 11px/1.4 var(--mono); color: var(--ink-3); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.comp .st { display: inline-block; margin-top: 6px; font-size: 11px; font-weight: 600; color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: 1px 6px; }
+.comp.on { border-color: transparent; box-shadow: 0 0 0 2px var(--accent); background: var(--surface); }
+.comp.linked { border-color: var(--accent); border-style: dashed; background: var(--surface); }
+.map-dim .comp:not(.on):not(.linked) { opacity: .4; }
+.band { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; box-shadow: var(--shadow); margin-bottom: 16px; }
+.band .lane-h { margin-bottom: 12px; }
+.band-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.band-ic { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); flex: none; }
+.cdetail .io { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.cdetail .io div { background: var(--surface-2); border-radius: 12px; padding: 12px 14px; }
+.cdetail .io h4, .cdetail h4 { margin: 0 0 6px; font: 600 12px/1.2 var(--font); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.cdetail ul { margin: 0; padding-left: 18px; font-size: 13.5px; }
+.cdetail .links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.statline { margin-top: 14px; display: flex; align-items: center; gap: 8px; font: 600 14px/1.3 var(--display); }
+.statline svg { color: var(--accent); }
+.print-only { display: none; }
+
 /* Skeleton */
 .skel { border-radius: 12px; background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite linear; }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
@@ -349,6 +381,11 @@ footer a { color: var(--ink-2); }
 @media (max-width: 640px) {
   main { padding: 20px 16px 48px; } .bar { padding: 10px 16px; gap: 10px; }
   .status { display: none; }
+  .tabs { overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button { padding: 7px 10px; font-size: 13px; }
+  .tabs button[data-short] { font-size: 0; }
+  .tabs button[data-short]::after { content: attr(data-short); font-size: 13px; }
   .run-label { display: none; }
   .kpis, .state { grid-template-columns: repeat(2, 1fr); }
   .profile { flex-wrap: wrap; } .result { align-items: flex-start; text-align: left; width: 100%; }
@@ -361,6 +398,38 @@ footer a { color: var(--ink-2); }
   table.stack td > * { justify-self: start; }
   footer { padding: 0 16px 32px; }
 }
+@media (max-width: 1180px) {
+  .lanes { grid-template-columns: 1fr; gap: 26px; }
+  .lane { margin: 0; }
+  .lane:not(:last-child)::after { right: auto; left: 50%; top: auto; bottom: -15px; width: 2px; height: 14px; }
+  .lane:not(:last-child)::before { right: auto; left: calc(50% - 4px); top: auto; bottom: -19px; border: 5px solid transparent; border-top-color: var(--line-strong); border-bottom: 0; transform: none; }
+  .lane .comps { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+}
+@media (max-width: 640px) { .cdetail .io { grid-template-columns: 1fr; } }
+
+/* Print / "Download as PDF": light, compact, every component written out. */
+@media print {
+  @page { size: A4 landscape; margin: 12mm; }
+  :root, :root[data-theme="dark"] { --bg: #fff; --surface: #fff; --surface-2: #F4F3F8; --line: #DDDAE6; --line-strong: #B9B5C9; --ink: #111; --ink-2: #333; --ink-3: #666; --accent: #6D28D9; --accent-soft: #EFE7FF; --shadow: none; --shadow-sm: none; color-scheme: light; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; animation: none !important; }
+  body { background: #fff !important; font-size: 11px; }
+  header, footer, .toast, #overlayRoot, #tab-runs, #tab-play, #tab-rules, .no-print, #cdetail { display: none !important; }
+  #tab-map { display: block !important; }
+  main { padding: 0; max-width: none; }
+  .hero { margin-bottom: 10px; } .hero h2 { font-size: 22px; } .hero p { font-size: 11px; }
+  .lanes { grid-template-columns: repeat(5, 1fr) !important; gap: 0 !important; break-inside: avoid; }
+  .lane { margin: 0 10px 0 0 !important; padding: 10px; }
+  .lane:not(:last-child)::after { right: -11px !important; left: auto !important; top: 50% !important; bottom: auto !important; width: 10px !important; height: 2px !important; }
+  .lane:not(:last-child)::before { display: none; }
+  .lane .comps { display: flex !important; flex-direction: column; gap: 6px; }
+  .comp { padding: 6px 8px; opacity: 1 !important; } .comp code { white-space: normal; }
+  .band { padding: 10px; break-inside: avoid; } .band-grid { grid-template-columns: repeat(6, 1fr); gap: 6px; }
+  .print-only { display: block; }
+  .print-page { break-before: page; }
+  .print-page h3 { font: 700 16px/1.2 var(--display); margin: 0 0 8px; }
+  .print-page table { font-size: 10.5px; margin-bottom: 12px; } .print-page td, .print-page th { padding: 5px 6px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
 }
@@ -380,7 +449,8 @@ footer a { color: var(--ink-2); }
       <span class="thumb" aria-hidden="true"></span>
       <button data-tab="runs" class="on">Runs</button>
       <button data-tab="play">Playground</button>
-      <button data-tab="rules">How it decides</button>
+      <button data-tab="rules" data-short="Rules" aria-label="How it decides">How it decides</button>
+      <button data-tab="map" data-short="Map" aria-label="Components map">Components</button>
     </nav>
     <div class="tools">
       <button class="search-btn" data-palette aria-label="Search and commands (Command K)"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Search or jump to…</span><kbd>⌘K</kbd></button>
@@ -458,6 +528,24 @@ footer a { color: var(--ink-2); }
     <div id="pDetail"></div>
   </section>
 
+  <!-- ============ COMPONENTS MAP ============ -->
+  <section id="tab-map" class="hidden">
+    <div class="hero">
+      <div>
+        <div class="eyebrow"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><path d="M17.5 14v7M14 17.5h7"/></svg>Components map</div>
+        <h2>Every part of the agent. <span class="grad-text">And how they connect.</span></h2>
+        <p>Left to right is the order a prospect travels through. Tap any part to see what it does, what goes in and out, where it lives in the code, and how often it ran.</p>
+      </div>
+      <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn soft" data-copy><svg class="i" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>Copy link</button>
+        <button class="btn primary" data-print><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download as PDF</button>
+      </div>
+    </div>
+    <div id="map"></div>
+    <div id="cdetail"></div>
+    <div id="mapPrint" class="print-only"></div>
+  </section>
+
   <!-- ============ RULES ============ -->
   <section id="tab-rules" class="hidden">
     <div class="hero">
@@ -521,7 +609,8 @@ function avatar(p, cls = "") {
 /* ===================== State ===================== */
 // Everything a viewer can point at lives in the URL hash so any view is a shareable link:
 // #run=<scenario>&filter=<kpi|outcome:x>&step=<node>   #tab=rules&rule=<id>   #tab=play&setup=<json>
-const S = { meta: null, runs: [], tab: "runs", selName: null, filter: "all", focus: null, rule: null, custom: null, q: "", loading: true };
+const S = { meta: null, runs: [], tab: "runs", selName: null, filter: "all", focus: null, rule: null, custom: null, q: "", loading: true, comp: null };
+const TABS = ["runs", "play", "rules", "map"];
 
 const LABEL = {
   icp_gate: "ICP gate", send_email: "Send cold email", await_reply: "First reply",
@@ -606,6 +695,7 @@ function writeHash(push) {
   }
   if (S.tab === "rules" && S.rule) p.set("rule", S.rule);
   if (S.tab === "play" && S.custom) p.set("setup", JSON.stringify(S.custom));
+  if (S.tab === "map" && S.comp) p.set("c", S.comp);
   const url = p.toString() ? "#" + p : location.pathname + location.search;
   if (url === location.hash || (!p.toString() && !location.hash)) return;
   history[push ? "pushState" : "replaceState"](null, "", url);
@@ -613,7 +703,8 @@ function writeHash(push) {
 }
 function readHash() {
   const p = new URLSearchParams(location.hash.slice(1));
-  S.tab = ["runs", "play", "rules"].includes(p.get("tab")) ? p.get("tab") : "runs";
+  S.tab = TABS.includes(p.get("tab")) ? p.get("tab") : "runs";
+  S.comp = p.get("c");
   S.selName = p.get("run") || S.selName;
   const f = p.get("filter");
   S.filter = FILTERS[f] || (f && f.startsWith("outcome:")) ? f : "all";
@@ -853,7 +944,7 @@ function renderSkeleton() {
 async function runAll() {
   const b = $("#runAll"); b.disabled = true; b.innerHTML = `<span class="spin"></span><span class="run-label">Running…</span>`;
   try {
-    S.runs = await api("/api/run", { scenario: "all" }); S.loading = false; renderRuns(); renderRules();
+    S.runs = await api("/api/run", { scenario: "all" }); S.loading = false; renderRuns(); renderRules(); renderMap();
     if (!runAll.first) toast(`Ran ${S.runs.length} scenarios · ${S.runs.filter(r => r.passed).length} as designed`);
   } catch (e) { S.loading = false; $("#detail").innerHTML = `<div class="card"><div class="empty" style="color:var(--bad)">${ic("info")}${esc(e.message)}</div></div>`; }
   finally { runAll.first = false; b.disabled = false; b.innerHTML = `${ic("play")}<span class="run-label">Run all</span>`; }
@@ -957,6 +1048,99 @@ function highlightRule() {
   row.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
+/* ===================== Components map ===================== */
+const M = () => S.meta.components_map;
+const compById = id => M().components.find(c => c.id === id);
+const sum = (arr, f) => arr.reduce((a, x) => a + f(x), 0);
+function compStat(c) {
+  const R = S.runs; if (!R.length) return null;
+  const rel = c.related || {};
+  if (c.layer === "tools") {
+    const calls = sum(R, r => r.tool_calls.filter(t => t.tool === rel.tool).length), fails = sum(R, r => r.tool_calls.filter(t => t.tool === rel.tool && !t.ok).length);
+    return { short: `${calls} calls`, long: `${calls} calls across ${R.length} runs${fails ? ` · ${fails} failures absorbed` : " · no failures"}` };
+  }
+  if (rel.step && c.layer === "seq2") {
+    const n = sum(R, r => r.path.filter(p => p === rel.step).length), runs = R.filter(r => r.path.includes(rel.step)).length;
+    return { short: `ran ${n}×`, long: `Ran ${n} times in ${runs} of ${R.length} runs` };
+  }
+  const stopped = R.filter(r => r.outcome === "disqualified").length, sent = sum(R, r => r.outbox.length);
+  switch (c.id) {
+    case "prospects": return { short: `${R.length} records`, long: `${R.length} prospects in this dataset` };
+    case "icp_gate": return { short: `${stopped} stopped`, long: `Checked ${R.length} prospects · ${stopped} stopped before any email` };
+    case "sequence1": { const n = R.filter(r => r.path.includes("send_email")).length; return { short: `${n} sent`, long: `${n} cold emails attempted · ${R.filter(r => r.outcome === "bounced").length} bounced` }; }
+    case "classifier": { const n = sum(R, r => r.events.filter(e => /^reply/.test(e)).length); return { short: `${n} read`, long: `${n} replies read and sorted` }; }
+    case "decider": { const n = sum(R, r => r.decisions.length); return { short: `${n} decisions`, long: `${n} decisions made without a person` }; }
+    case "retry": { const n = sum(R, failCount); return { short: `${n} absorbed`, long: `${n} tool failures handled by the retry table` }; }
+    case "x_mail": return { short: `${sent} emails`, long: `${sent} emails sent` };
+    case "x_calendar": { const n = R.filter(r => r.booking).length; return { short: `${n} booked`, long: `${n} meetings booked on the calendar` }; }
+    case "x_crm": { const n = R.filter(r => r.crm).length; return { short: `${n} records`, long: `${n} CRM records written · ${sum(R, r => r.dead_letter.length)} parked in dead-letter` }; }
+    case "state": return { short: "6 fields", long: `Tracked through ${R.filter(r => r.path.includes("check_calendar")).length} scheduling runs` };
+    case "pipeline": return { short: `${R.length} runs`, long: `Ran ${R.length} prospects end to end` };
+    default: return null;
+  }
+}
+function linkedIds(id) {
+  const out = new Set();
+  M().edges.forEach(e => { if (e.from === id) out.add(e.to); if (e.to === id) out.add(e.from); });
+  return out;
+}
+function compBtn(c, linked) {
+  const st = compStat(c);
+  return `<button class="comp ${S.comp === c.id ? "on" : ""} ${linked.has(c.id) ? "linked" : ""}" data-comp="${esc(c.id)}" aria-pressed="${S.comp === c.id}">
+    <b>${esc(c.name)}</b><code>${esc(c.file)}</code>${st ? `<span class="st">${esc(st.short)}</span>` : ""}</button>`;
+}
+function renderMap() {
+  if (!S.meta) return;
+  const m = M(), linked = S.comp ? linkedIds(S.comp) : new Set();
+  const byLayer = id => m.components.filter(c => c.layer === id);
+  const lanes = m.layers.filter(l => !l.band).map(l => `
+    <div class="lane"><div class="lane-h"><span class="lane-n">${esc(l.step)}</span><span><b>${esc(l.title)}</b><small>${esc(l.subtitle)}</small></span></div>
+      <div class="comps">${byLayer(l.id).map(c => compBtn(c, linked)).join("")}</div></div>`).join("");
+  const bands = m.layers.filter(l => l.band).map(l => `
+    <div class="band"><div class="lane-h"><span class="band-ic">${ic(l.id === "brain" ? "brain" : "play")}</span><span><b>${esc(l.title)}</b><small>${esc(l.subtitle)}</small></span></div>
+      <div class="band-grid">${byLayer(l.id).map(c => compBtn(c, linked)).join("")}</div></div>`).join("");
+  $("#map").className = S.comp ? "map-dim" : "";
+  $("#map").innerHTML = `<div class="lanes">${lanes}</div>${bands}`;
+  renderCompDetail(); renderMapPrint();
+}
+function icpTable(compact) {
+  return `<div class="scroll-x"><table class="stack"><thead><tr><th>Variable</th><th>Where it comes from</th><th>Pages to check</th><th>Valid answers</th></tr></thead><tbody>
+    ${M().icp_variables.map(v => `<tr><td data-label="Variable"><code class="mono">${esc(v.name)}</code></td><td data-label="Source">${esc(v.source)}</td>
+      <td data-label="Pages">${v.target_pages ? v.target_pages.map(p => `<code class="mono">${esc(p)}</code>`).join(" ") : '<span class="muted">—</span>'}</td>
+      <td data-label="Valid">${esc(v.valid ? v.valid.join(" · ") : v.valid_range ? `${v.valid_range[0]}–${v.valid_range[1]} employees` : "")}</td></tr>`).join("")}
+  </tbody></table></div>`;
+}
+function renderCompDetail() {
+  const c = S.comp && compById(S.comp);
+  if (!c) { $("#cdetail").innerHTML = `<div class="card"><div class="empty">${ic("info")}Tap any part of the map to see what it does and how it connects. Dashed outlines show its direct neighbours.</div></div>`; return; }
+  const m = M(), layer = m.layers.find(l => l.id === c.layer), st = compStat(c), rel = c.related || {};
+  const ins = m.edges.filter(e => e.to === c.id), outs = m.edges.filter(e => e.from === c.id);
+  const chip = (id, label) => `<button class="chip" data-comp="${esc(id)}">${esc(compById(id).name)}${label ? ` <span class="muted">· ${esc(label)}</span>` : ""}</button>`;
+  const bestRun = rel.step ? [...S.runs].sort((a, b) => b.path.filter(p => p === rel.step).length - a.path.filter(p => p === rel.step).length)[0] : null;
+  $("#cdetail").innerHTML = `<div class="card cdetail">
+    <div class="card-h"><h3>${ic("spark")}${esc(c.name)}</h3><span class="pill acc">${esc(layer.step ? layer.step + " · " : "")}${esc(layer.title)}</span></div>
+    <p style="margin:0;font-size:14.5px">${esc(c.summary)}</p>
+    ${st ? `<div class="statline">${ic("check")}${esc(st.long)}</div>` : ""}
+    <div class="io"><div><h4>Takes in</h4><ul>${c.inputs.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div><div><h4>Gives out</h4><ul>${c.outputs.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div></div>
+    ${ins.length || outs.length ? `<div class="io">${ins.length ? `<div><h4>Comes from</h4><div class="links">${ins.map(e => chip(e.from, e.label)).join("")}</div></div>` : "<div></div>"}${outs.length ? `<div><h4>Leads to</h4><div class="links">${outs.map(e => chip(e.to, e.label)).join("")}</div></div>` : "<div></div>"}</div>` : ""}
+    ${c.id === "icp_gate" ? `<div style="margin-top:16px"><h4>ICP components · variables, sources, pages, valid answers</h4>${icpTable()}</div>` : ""}
+    <div class="actions">
+      <a class="btn soft sm" href="${esc(m.repo)}/blob/main/${esc(c.file)}" target="_blank" rel="noopener">${ic("github")}View source · <span class="mono">${esc(c.file)}</span></a>
+      ${bestRun ? `<button class="btn soft sm" data-goto="${esc(bestRun.name)}" data-goto-step="${esc(rel.step)}">${ic("route")}See it in a run</button>` : ""}
+      ${rel.rule ? `<button class="btn soft sm" data-rule="${esc(rel.rule)}">${ic("shield")}See its rule</button>` : ""}
+    </div></div>`;
+}
+function renderMapPrint() {
+  const m = M();
+  $("#mapPrint").innerHTML = `<div class="print-page"><h3>Components in detail</h3>
+    <table><thead><tr><th>Layer</th><th>Component</th><th>File</th><th>What it does</th><th>In</th><th>Out</th></tr></thead><tbody>
+    ${m.components.map(c => { const l = m.layers.find(x => x.id === c.layer); return `<tr><td>${esc((l.step ? l.step + " · " : "") + l.title)}</td><td><b>${esc(c.name)}</b></td><td class="mono">${esc(c.file)}</td><td>${esc(c.summary)}</td><td>${esc(c.inputs.join("; "))}</td><td>${esc(c.outputs.join("; "))}</td></tr>`; }).join("")}
+    </tbody></table></div>
+    <div class="print-page"><h3>ICP components</h3>${icpTable()}
+    <h3 style="margin-top:14px">How components connect</h3>
+    <table><thead><tr><th>From</th><th>To</th><th>What passes</th></tr></thead><tbody>${m.edges.map(e => `<tr><td>${esc(compById(e.from).name)}</td><td>${esc(compById(e.to).name)}</td><td>${esc(e.label || "—")}</td></tr>`).join("")}</tbody></table></div>`;
+}
+
 /* ===================== Command palette & shortcuts ===================== */
 let pal = null;
 function paletteItems() {
@@ -964,6 +1148,8 @@ function paletteItems() {
     { g: "Go to", t: "Runs", s: "All prospects and outcomes", icon: "users", run: () => showTab("runs", true) },
     { g: "Go to", t: "Playground", s: "Run the agent on your own situation", icon: "play", run: () => showTab("play", true) },
     { g: "Go to", t: "How it decides", s: "Decision rules, retries, ICP", icon: "shield", run: () => showTab("rules", true) },
+    { g: "Go to", t: "Components map", s: "Every part of the agent and how they connect", icon: "route", run: () => showTab("map", true) },
+    { g: "Actions", t: "Download components map as PDF", s: "Print-ready, A4 landscape", icon: "list", run: () => printMap() },
     { g: "Actions", t: "Run all scenarios", s: "Re-run the agent end to end", icon: "replay", run: () => runAll() },
     { g: "Actions", t: "Copy link to this view", s: "Share exactly what you're looking at", icon: "link", run: () => copyLink() },
     { g: "Actions", t: "Change theme", s: "System → light → dark", icon: "sun", run: () => cycleTheme() },
@@ -972,6 +1158,7 @@ function paletteItems() {
     ...Object.entries(FILTERS).filter(([k]) => k !== "all").map(([k, f]) => ({ g: "Filter", t: f.label, s: f.hint, icon: f.icon, run: () => { showTab("runs", true); S.filter = k; renderRuns(); writeHash(true); } })),
     ...S.runs.map(r => ({ g: "Prospects", t: r.prospect.company, s: `${oc(r.outcome).label} · ${r.about}`, avatar: r.prospect, run: () => gotoRun(r.name) })),
     ...(S.meta ? S.meta.decision_policy.map(p => ({ g: "Rules", t: p.kind, s: p.rule, icon: "spark", run: () => gotoRule(p.kind) })) : []),
+    ...(S.meta ? M().components.map(c => ({ g: "Components", t: c.name, s: c.file, icon: "route", run: () => gotoComp(c.id) })) : []),
   ];
   return items;
 }
@@ -1012,7 +1199,7 @@ function openShortcuts() {
       <span>Search &amp; commands</span><span><kbd>⌘</kbd><kbd>K</kbd></span>
       <span>Search prospects</span><span><kbd>/</kbd></span>
       <span>Next / previous prospect</span><span><kbd>j</kbd><kbd>k</kbd></span>
-      <span>Runs · Playground · Rules</span><span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd></span>
+      <span>Runs · Playground · Rules · Map</span><span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd></span>
       <span>Run all scenarios</span><span><kbd>r</kbd></span>
       <span>Change theme</span><span><kbd>t</kbd></span>
       <span>Copy link to this view</span><span><kbd>c</kbd></span>
@@ -1030,13 +1217,16 @@ function moveThumb() {
 function showTab(tab, push) {
   S.tab = tab;
   $$(".tabs button").forEach(b => { b.classList.toggle("on", b.dataset.tab === tab); b.setAttribute("aria-current", b.dataset.tab === tab ? "page" : "false"); });
-  ["runs", "play", "rules"].forEach(t => $("#tab-" + t).classList.toggle("hidden", t !== tab));
+  TABS.forEach(t => $("#tab-" + t).classList.toggle("hidden", t !== tab));
   moveThumb(); writeHash(push);
   if (tab === "rules") highlightRule();
+  if (tab === "map") renderMap();
   if (push) window.scrollTo({ top: 0, behavior: "smooth" });
 }
-function gotoRun(name) {
-  S.filter = "all"; S.q = ""; $("#q").value = ""; S.selName = name; S.focus = null;
+function gotoComp(id) { S.comp = id; showTab("map", true); renderMap(); $("#cdetail").scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+function printMap() { if (S.tab !== "map") showTab("map", true); renderMap(); setTimeout(() => window.print(), 50); }
+function gotoRun(name, step = null) {
+  S.filter = "all"; S.q = ""; $("#q").value = ""; S.selName = name; S.focus = step;
   showTab("runs", true); renderRuns();
 }
 function gotoRule(id) { S.rule = id; showTab("rules", true); }
@@ -1052,7 +1242,7 @@ document.addEventListener("click", e => {
   if (e.target.matches("[data-close-overlay]") || e.target.closest("[data-close]")) return closeOverlay();
   const palOpt = e.target.closest("[data-pal]");
   if (palOpt && pal) { const it = pal.shown[+palOpt.dataset.pal]; closeOverlay(); return it && it.run(); }
-  const t = e.target.closest("[data-tab],[data-filter],[data-run],[data-step],[data-rule],[data-goto],[data-replay],[data-preset],[data-copy],[data-palette],[data-shortcuts],[data-clear]");
+  const t = e.target.closest("[data-tab],[data-filter],[data-run],[data-step],[data-rule],[data-goto],[data-replay],[data-preset],[data-copy],[data-palette],[data-shortcuts],[data-clear],[data-comp],[data-print]");
   if (!t) return;
   const d = t.dataset;
   if (d.tab) return showTab(d.tab, true);
@@ -1067,7 +1257,10 @@ document.addEventListener("click", e => {
     return $(".focus")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
   if (d.rule) return gotoRule(d.rule);
-  if (d.goto) return gotoRun(d.goto);
+  if (d.goto) return gotoRun(d.goto, d.gotoStep || null);
+  if (d.comp) { S.comp = (S.comp === d.comp && t.classList.contains("comp")) ? null : d.comp; renderMap(); writeHash(false);
+    if (S.comp) $("#cdetail").scrollIntoView({ behavior: "smooth", block: "nearest" }); return; }
+  if ("print" in d) return printMap();
   if (d.replay) return replayInPlayground(d.replay);
   if (d.preset) { fillForm(PRESETS[+d.preset][1]); return toast(`Loaded “${PRESETS[+d.preset][0]}”. Hit Run agent.`, "play"); }
   if ("copy" in d) return copyLink();
@@ -1077,6 +1270,7 @@ document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     if ($("#overlayRoot").innerHTML) return closeOverlay();
     if (document.activeElement === $("#q")) { $("#q").blur(); return; }
+    if (S.tab === "map" && S.comp) { S.comp = null; renderMap(); return writeHash(false); }
     if (S.focus) { S.focus = null; renderRuns(); return writeHash(false); }
     if (S.filter !== "all" || S.q) { S.filter = "all"; S.q = ""; $("#q").value = ""; renderRuns(); return writeHash(false); }
     return;
@@ -1092,6 +1286,7 @@ document.addEventListener("keydown", e => {
   else if (k === "1") showTab("runs", true);
   else if (k === "2") showTab("play", true);
   else if (k === "3") showTab("rules", true);
+  else if (k === "4") showTab("map", true);
   else if (k === "r") runAll();
   else if (k === "t") cycleTheme();
   else if (k === "c") copyLink();

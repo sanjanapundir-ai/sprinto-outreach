@@ -26,7 +26,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 ```
 
 ```bash
-.venv/bin/python -m pytest -q                # 46 tests
+.venv/bin/python -m pytest -q                # 47 tests
 ```
 
 ### Dashboard
@@ -43,13 +43,19 @@ A local web page that runs the real agent and shows:
   timeline, the emails sent, every tool call and retry, and the CRM record.
 * **Playground:** pick a prospect, write their replies line by line (`-` = no reply), add busy
   calendar slots, inject transient or permanent failures for any tool, and run the agent.
+* **Components map:** every part of the agent in the order a prospect travels through it (data & fit →
+  send & wait → schedule the call → tools → outside world), plus the shared brain (state, retry table,
+  decider, checkpointer) and delivery. Tap a part for what it does, inputs/outputs, live stats, its
+  neighbours, its source file and its rules. **Download as PDF** prints an A4-landscape version; a copy is
+  in [`docs/components-map.pdf`](docs/components-map.pdf). The map is defined in `outreach/components.py`
+  and a test fails if it names a file or connection that doesn't exist.
 * **How it decides:** the decision policy, retry table, caps, ICP rules and tool descriptions. Each
   rule lists the runs where it was used.
 
 Design: dark and light themes (follows your system; `t` or the header button switches), a violet-to-pink
 accent, chat-style conversation view, outcome-mix bar, skeleton loading, and motion that respects
 "reduce motion". Power-user extras: **⌘K command bar** (jump to any prospect, rule or action), `/` search,
-`j`/`k` next/previous prospect, `1`/`2`/`3` tabs, `r` run all, `c` copy link, `?` all shortcuts.
+`j`/`k` next/previous prospect, `1`–`4` tabs, `r` run all, `c` copy link, `?` all shortcuts.
 
 Everything is tappable and linked:
 
