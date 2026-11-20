@@ -60,11 +60,15 @@ Everything is tappable and linked:
 It uses only Python's standard library (`outreach/dashboard.py` + `outreach/static/dashboard.html`),
 listens on 127.0.0.1 only, and every run uses a fresh in-memory world.
 
-### Deployment (GitHub → Vercel)
+### Deployment (Vercel)
 
-The repo deploys to Vercel automatically on every push to `main`:
+**Live dashboard: https://sprinto-outreach-omega.vercel.app**
 
-* `vercel.json`: the build copies `outreach/static/dashboard.html` to `public/index.html` (served as the page).
+Deployed with the Vercel CLI (`npx vercel deploy --prod --scope 22-0b11` from the project folder). To redeploy
+automatically on every push, connect this GitHub repo under the Vercel project's Settings → Git. That needs
+the Vercel GitHub app on `sanjanapundir-ai` to include this repo. How it is set up:
+
+* `vercel.json`: `"framework": null` (separate functions, not a single Python app); the build copies `outreach/static/dashboard.html` to `public/index.html` (served as the page).
 * `api/meta.py`, `api/run.py`, `api/custom.py`: Python serverless functions that reuse
   `outreach.dashboard.Handler`, so local and deployed behaviour are identical.
 * `requirements.txt` holds runtime dependencies only (what Vercel installs). `requirements-dev.txt` adds pytest.
